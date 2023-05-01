@@ -1,0 +1,10 @@
+import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
+import { DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb';
+import { ElectroEvent } from 'electrodb';
+
+const dynamoDBClient = new DynamoDBClient({});
+export const client = DynamoDBDocumentClient.from(dynamoDBClient);
+
+export const logger = (event: ElectroEvent) => {
+  console.info(JSON.stringify(event, null, 4));
+};
