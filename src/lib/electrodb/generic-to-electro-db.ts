@@ -15,8 +15,6 @@ export const genericToElectroDb = (objGeneric: Generic, outputPath: string): any
   };
   let template = fs.readFileSync('./src/schemas/model.ts__tmpl__', 'utf-8');
 
-  console.log(template);
-
   let rendered = ejs.render(template, objData, { escape: (markup: string) => markup });
   rendered = prettier.format(rendered, {
     parser: 'typescript',
@@ -24,7 +22,6 @@ export const genericToElectroDb = (objGeneric: Generic, outputPath: string): any
     trailingComma: 'all'
   });
 
-  console.log(util.inspect(rendered, false, 8, false));
   if (!fs.existsSync(outputPath)) {
     fs.mkdirSync(outputPath, { recursive: true });
   }

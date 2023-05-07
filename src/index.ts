@@ -7,16 +7,19 @@ const main = () => {
   const fileNames = readFolder(folderPathInput).filter((item) => item.includes('.ts') || item.includes('.js'));
 
   for (let fileName of fileNames) {
-    const filePath = `${folderPathInput}/${fileName}`;
-    const lines = importLines(filePath);
+    try {
+      const filePath = `${folderPathInput}/${fileName}`;
+      const lines = importLines(filePath);
 
-    // Convert to a generic (universal) structure
-    let generic = dynamoTypesToGeneric(lines);
+      // Convert to a generic (universal) structure
+      let generic = dynamoTypesToGeneric(lines);
 
-    // Convert generic to ElectroDB format
-    let response = genericToElectroDb(generic, path.join(__dirname, '../files/output'));
-
-    console.log(response);
+      // Convert generic to ElectroDB format
+      genericToElectroDb(generic, path.join(__dirname, '../files/output'));
+      console.log(`Successfully converted ${fileName}`);
+    } catch (error) {
+      console.error(`Error on file ${fileName}`, error.message);
+    }
   }
 };
 
