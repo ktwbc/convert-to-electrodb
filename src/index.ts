@@ -1,23 +1,22 @@
 import { readFolder, importLines, dynamoTypesToGeneric } from './lib';
-import { buildAttributes } from './lib/build-attributes';
-import { genericToElectroDb } from './lib/generic-to-electro-db';
+import { genericToElectroDb } from './lib/electrodb/generic-to-electro-db';
+import * as path from 'path';
 
 const main = () => {
-  const folderPath = './files/input';
-  const fileNames = readFolder(folderPath);
+  const folderPathInput = './files/input';
+  const fileNames = readFolder(folderPathInput).filter((item) => item.includes('.ts') || item.includes('.js'));
 
   for (let fileName of fileNames) {
-    console.log(fileName);
-
-    const filePath = `${folderPath}/${fileName}`;
+    const filePath = `${folderPathInput}/${fileName}`;
     const lines = importLines(filePath);
 
-    // Convert to a generic format
+    // Convert to a generic (universal) structure
     let generic = dynamoTypesToGeneric(lines);
-    let electroSchema = genericToElectroDb(generic);
 
-    console.log(generic);
-    console.log(electroSchema);
+    // Convert generic to ElectroDB format
+    let response = genericToElectroDb(generic, path.join(__dirname, '../files/output'));
+
+    console.log(response);
   }
 };
 

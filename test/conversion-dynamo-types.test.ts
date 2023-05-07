@@ -1,4 +1,9 @@
-import { importLines, readFolder, dynamoTypesToGeneric } from '../src/lib';
+import { dynamoTypesToGeneric, importLines, readFolder } from '../src/lib';
+import * as fs from 'fs';
+import * as ejs from 'ejs';
+import { Generic, IndexType } from '../src/interface/generic';
+import { buildAttributes } from '../src/lib/electrodb/build-attributes';
+import { buildIndexes } from '../src/lib/electrodb/build-indexes';
 
 describe('dynamo-types test', () => {
   it('should read files in folder', () => {
@@ -37,10 +42,10 @@ describe('dynamo-types test', () => {
     );
     expect(generic.indexes).toEqual(
       expect.arrayContaining([
-        { name: 'primary', pk: 'id', type: 'hash' },
-        { name: 'primary', pk: 'id', sk: 'publish_date', type: 'full' },
-        { name: 'code-code_type', pk: 'code', sk: 'code_type', type: 'gsi' },
-        { name: 'idx_author_id', pk: 'author_id', sk: 'id', type: 'gsi' }
+        { indexName: '', name: 'primary', pk: 'id', type: 'hash' },
+        { indexName: '', name: 'primary', pk: 'id', sk: 'publish_date', type: 'full' },
+        { indexName: 'code-code_type', name: 'code', pk: 'code', sk: 'code_type', type: 'gsi' },
+        { indexName: 'idx_author_id', name: 'managerId', pk: 'author_id', sk: 'id', type: 'gsi' }
       ])
     );
   });
@@ -63,7 +68,7 @@ describe('dynamo-types test', () => {
         { name: 'zip', type: 'number', dbName: 'zip_code' }
       ])
     );
-    expect(generic.indexes).toEqual(expect.arrayContaining([{ name: 'primary', pk: 'id', type: 'hash' }]));
+    expect(generic.indexes).toEqual(expect.arrayContaining([{ indexName: '', name: 'primary', pk: 'id', type: 'hash' }]));
   });
 
   it('should build an generic model structure for DynamoCities', () => {
@@ -81,9 +86,40 @@ describe('dynamo-types test', () => {
     );
     expect(generic.indexes).toEqual(
       expect.arrayContaining([
-        { name: 'primary', pk: 'id', type: 'hash' },
-        { name: 'customer-created', pk: 'id', sk: 'state', type: 'lsi' }
+        { indexName: '', name: 'primary', pk: 'id', type: 'hash' },
+        { indexName: 'customer-created', name: 'customers', pk: 'id', sk: 'state', type: 'lsi' }
       ])
     );
+  });
+
+  it('should convert a structure into a new template', () => {
+    let objGeneric: Generic = {
+      tableName: 'test-table',
+      modelName: 'testTable',
+      fields: [
+        { name: 'id', type: 'string' },
+        { name: 'title', type: 'string' },
+        { name: 'publish_date', type: 'object' },
+        { name: 'contents', type: 'string', dbName: 'body' },
+        { name: 'code', type: 'string' },
+        { name: 'codeType', type: 'string', dbName: 'code_type' }
+      ],
+      indexes: [{ indexName: '', name: 'primaryKey', pk: 'id', sk: 'code', type: IndexType.full }]
+    };
+
+    let objData = {
+      tableName: 'test-table',
+      modelName: 'testTable',
+      attributes: buildAttributes(objGeneric),
+      indexes: buildIndexes(objGeneric)
+    };
+
+    let template = fs.readFileSync('./src/schemas/model.ts__tmpl__', 'utf-8');
+
+    let rendered = ejs.render(template, objData, { escape: (markup: string) => markup });
+    expect(rendered).toContain('export const testTable');
+    expect(rendered).toContain("entity: 'testTable'");
+    expect(rendered).toContain('composite');
+    expect(rendered).toContain('code');
   });
 });

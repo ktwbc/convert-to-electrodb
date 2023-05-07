@@ -1,4 +1,4 @@
-import { Generic, GenericField } from '../interface/generic';
+import { Generic, GenericField } from '../../interface/generic';
 
 export const buildAttributes = (objGeneric: Generic) => {
   return objGeneric.fields.reduce((accumulator, field: GenericField) => {

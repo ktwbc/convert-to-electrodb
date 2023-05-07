@@ -4,9 +4,17 @@ export interface GenericField {
   dbName?: string; // database field name if different than name
 }
 
+export enum IndexType {
+  'hash' = 'hash',
+  'full' = 'full',
+  'lsi' = 'lsi',
+  'gsi' = 'gsi'
+}
+
 export interface GenericIndex {
-  name: string;
-  type: string; // gsi or lsi
+  name: string; // variable name from model file
+  indexName: string; // only for gsi or lsi
+  type: IndexType;
   pk: string;
   sk?: string;
 }

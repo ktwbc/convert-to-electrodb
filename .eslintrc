@@ -4,7 +4,7 @@
     "es6": true,
     "node": true
   },
-  "ignorePatterns": ["files", "test/files"],
+  "ignorePatterns": ["files/**/*", "test/files"],
   "parser": "@typescript-eslint/parser",
   "plugins": [
     "@typescript-eslint"

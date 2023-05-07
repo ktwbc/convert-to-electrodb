@@ -12,7 +12,7 @@
   ],
   "exclude": [
     "node_modules",
-    "files",
+    "files/**/*",
     "test/files",
     "src/sample"
   ]

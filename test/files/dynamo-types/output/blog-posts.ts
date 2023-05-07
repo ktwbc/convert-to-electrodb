@@ -15,7 +15,7 @@ export const BlogPosts = new Entity(
       status: { type: 'string' }
     },
     indexes: {
-      tokens: {
+      primary: {
         pk: {
           field: 'id',
           composite: ['id'],

@@ -7,7 +7,7 @@ export class DynamoCities extends Table {
   public static readonly primaryKey: Query.HashPrimaryKey<DynamoCities, string>;
 
   @Decorator.LocalSecondaryIndex('state', { name: 'customer-created' })
-  public static readonly lsi: Query.LocalSecondaryIndex<DynamoCities, string>;
+  public static readonly customers: Query.LocalSecondaryIndex<DynamoCities, string>;
 
   @Decorator.Writer()
   public static readonly writer: Query.Writer<DynamoCities>;

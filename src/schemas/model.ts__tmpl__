@@ -1,0 +1,17 @@
+import { client } from './ddb-client';
+import { Entity } from 'electrodb';
+
+const table = <%= tableName %>;
+
+export const <%= modelName %> = new Entity(
+  {
+    model: {
+      entity: '<%= modelName %>',
+      service: 'database',
+      version: '01'
+    },
+    attributes: <%= JSON.stringify(attributes) %>,
+    indexes: <%= JSON.stringify(indexes) %>
+  },
+  { client, table }
+);
