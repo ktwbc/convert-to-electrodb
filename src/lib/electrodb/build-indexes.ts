@@ -7,7 +7,8 @@ export const buildIndexes = (objGeneric: Generic) => {
         accumulator[index.name] = {
           pk: {
             field: index.pk,
-            composite: [index.pk]
+            composite: [index.pk],
+            template: '${' + index.pk + '}'
           }
         };
         break;
@@ -15,11 +16,13 @@ export const buildIndexes = (objGeneric: Generic) => {
         accumulator[index.name] = {
           pk: {
             field: index.pk,
-            composite: [index.pk]
+            composite: [index.pk],
+            template: '${' + index.pk + '}'
           },
           sk: {
             field: index.sk,
-            composite: [index.sk]
+            composite: [index.sk],
+            template: '${' + index.sk + '}'
           }
         };
         break;
@@ -29,11 +32,13 @@ export const buildIndexes = (objGeneric: Generic) => {
           index: index.indexName,
           pk: {
             field: index.pk,
-            composite: [index.pk]
+            composite: [index.pk],
+            template: '${' + index.pk + '}'
           },
           sk: {
             field: index.sk,
-            composite: [index.sk]
+            composite: [index.sk],
+            template: '${' + index.sk + '}'
           }
         };
         break;
