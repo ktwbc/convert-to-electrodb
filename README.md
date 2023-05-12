@@ -88,13 +88,18 @@ export const DynamoAuditLog = new Entity(
     },
     indexes: {
       primary: {
-        pk: { field: 'user', composite: ['user'] },
-        sk: { field: 'created_at', composite: ['created_at'] },
+        pk: { field: 'user', composite: ['user'], template: '${user}' },
+        sk: {
+          field: 'created_at',
+          composite: ['created_at'],
+          template: '${created_at}',
+        },
       },
     },
   },
   { client, table },
 );
+
 
 ```
 
