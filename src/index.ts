@@ -15,7 +15,7 @@ const main = () => {
       let generic = dynamoTypesToGeneric(lines);
 
       // Convert generic to ElectroDB format
-      genericToElectroDb(generic, path.join(__dirname, '../files/output'));
+      genericToElectroDb(fileName, generic, path.join(__dirname, '../files/output'));
       console.log(`Successfully converted ${fileName}`);
     } catch (error) {
       console.error(`Error on file ${fileName}`, error.message);

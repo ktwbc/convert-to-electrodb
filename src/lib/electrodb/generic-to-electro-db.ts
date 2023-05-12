@@ -6,7 +6,7 @@ import util from 'util';
 import * as prettier from 'prettier';
 import { buildIndexes } from './build-indexes';
 
-export const genericToElectroDb = (objGeneric: Generic, outputPath: string): any => {
+export const genericToElectroDb = (fileName: string, objGeneric: Generic, outputPath: string): any => {
   let objData = {
     tableName: objGeneric.tableName,
     modelName: objGeneric.modelName,
@@ -25,7 +25,7 @@ export const genericToElectroDb = (objGeneric: Generic, outputPath: string): any
   if (!fs.existsSync(outputPath)) {
     fs.mkdirSync(outputPath, { recursive: true });
   }
-  fs.writeFileSync(`${outputPath}/${objGeneric.modelName}.ts`, rendered);
+  fs.writeFileSync(`${outputPath}/${fileName}`, rendered);
   // Place in the ddb client file
   fs.writeFileSync(`${outputPath}/ddb-client.ts`, fs.readFileSync('./src/schemas/ddb-client.ts__tmpl__', 'utf-8'));
 
