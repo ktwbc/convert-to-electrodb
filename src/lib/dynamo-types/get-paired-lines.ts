@@ -1,9 +1,9 @@
 // Search for a model line with its pair that includes the search string
-export const getPairedLines = (lines: string[], searchString: string) =>
-  lines
+export const getPairedLines = (lines: string[], searchString: string, multiline = false) => {
+  return lines
     .map((line, index) => {
       if (line.includes(searchString)) {
-        if (!line.includes('})')) {
+        if (!line.includes('})') && multiline) {
           // appears that Decorator uses three lines instead of 1, so we have to grab them
           return [line + lines[index + 1] + lines[index + 2], lines[index + 3]];
         } else {
@@ -13,6 +13,7 @@ export const getPairedLines = (lines: string[], searchString: string) =>
       return null;
     })
     .filter((line) => line !== null);
+};
 
 /**
  *   @Decorator.FullGlobalSecondaryIndex('invite_email', 'course', { name: 'invited-index' })

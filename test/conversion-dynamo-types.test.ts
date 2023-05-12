@@ -4,6 +4,7 @@ import * as ejs from 'ejs';
 import { Generic, IndexType } from '../src/interface/generic';
 import { buildAttributes } from '../src/lib/electrodb/build-attributes';
 import { buildIndexes } from '../src/lib/electrodb/build-indexes';
+import * as prettier from 'prettier';
 
 describe('dynamo-types test', () => {
   it('should read files in folder', () => {
@@ -76,7 +77,7 @@ describe('dynamo-types test', () => {
 
     let generic = dynamoTypesToGeneric(cityLines);
     expect(Object.keys(generic)).toHaveLength(4);
-    expect(generic.tableName).toBe('`${env}-${process.env.DYNAMODB_TABLE_USERS}`');
+    expect(generic.tableName).toBe('`${env}-${process.env.DYNAMODB_TABLE_CITIES}`');
     expect(generic.modelName).toBe('DynamoCities');
     expect(generic.fields).toEqual(
       expect.arrayContaining([
@@ -121,5 +122,36 @@ describe('dynamo-types test', () => {
     expect(rendered).toContain("entity: 'testTable'");
     expect(rendered).toContain('composite');
     expect(rendered).toContain('code');
+  });
+
+  it('should convert our test templates into new templates', () => {
+    const folderPathInput = './test/files/dynamo-types/input';
+    const fileNames = readFolder(folderPathInput).filter((item) => item.includes('.ts') || item.includes('.js'));
+
+    for (let fileName of fileNames) {
+      const filePath = `${folderPathInput}/${fileName}`;
+      const lines = importLines(filePath);
+
+      // Convert to a generic (universal) structure
+      let objGeneric = dynamoTypesToGeneric(lines);
+
+      let objData = {
+        tableName: objGeneric.tableName,
+        modelName: objGeneric.modelName,
+        attributes: buildAttributes(objGeneric),
+        indexes: buildIndexes(objGeneric)
+      };
+      let template = fs.readFileSync('./src/schemas/model.ts__tmpl__', 'utf-8');
+
+      let rendered = ejs.render(template, objData, { escape: (markup: string) => markup });
+      rendered = prettier.format(rendered, {
+        parser: 'typescript',
+        singleQuote: true,
+        trailingComma: 'none'
+      });
+
+      let output = fs.readFileSync('./test/files/dynamo-types/output/' + fileName, 'utf-8');
+      expect(rendered).toEqual(output);
+    }
   });
 });

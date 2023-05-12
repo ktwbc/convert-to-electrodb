@@ -3,10 +3,10 @@ import { getPairedLines } from './get-paired-lines';
 import { findEndingInColon } from '../find-ending-in-colon';
 
 export const findIndexes = (lines: string[]): GenericIndex[] => {
-  let hashLines = getPairedLines(lines, '@Decorator.HashPrimaryKey');
-  let fullLines = getPairedLines(lines, '@Decorator.FullPrimaryKey');
-  let lsiLines = getPairedLines(lines, '@Decorator.LocalSecondaryIndex');
-  let gsiLines = getPairedLines(lines, '@Decorator.FullGlobalSecondaryIndex');
+  let hashLines = getPairedLines(lines, '@Decorator.HashPrimaryKey', true);
+  let fullLines = getPairedLines(lines, '@Decorator.FullPrimaryKey', true);
+  let lsiLines = getPairedLines(lines, '@Decorator.LocalSecondaryIndex', true);
+  let gsiLines = getPairedLines(lines, '@Decorator.FullGlobalSecondaryIndex', true);
 
   let indexArray: GenericIndex[] = [];
   let pkSave: string;
